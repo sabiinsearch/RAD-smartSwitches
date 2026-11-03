@@ -1,0 +1,36 @@
+#include <Arduino.h>
+#include <esp_adc_cal.h>
+
+#define LM35_PIN 35
+#define DEFAULT_VREF 1100 // Default reference voltage in mV
+
+
+esp_adc_cal_characteristics_t *adc_chars;
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Configure ADC width and attenuation for GPIO 35
+  analogReadResolution(12);
+  analogSetAttenuation(ADC_11db); // Full-scale voltage up to ~3.3V
+
+  // Characterize ADC
+  adc_chars = (esp_adc_cal_characteristics_t *)calloc(1, sizeof(esp_adc_cal_characteristics_t));
+  esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_11, ADC_WIDTH_BIT_12, DEFAULT_VREF, adc_chars);
+}
+
+void loop() {
+  uint32_t adc_reading = analogRead(LM35_PIN);
+  uint32_t voltage_mv = esp_adc_cal_raw_to_voltage(adc_reading, adc_chars);
+  
+  // LM35 outputs 10 mV per degree Celsius
+  float temperatureC = voltage_mv / 10.0;
+  
+  Serial.print("Voltage: ");
+  Serial.print(voltage_mv);
+  Serial.print(" mV | Temp: ");
+  Serial.print(temperatureC);
+  Serial.println(" °C");
+
+  delay(1000);
+}

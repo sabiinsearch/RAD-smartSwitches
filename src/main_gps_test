@@ -1,0 +1,51 @@
+#include <TinyGPSPlus.h>
+#include <HardwareSerial.h>
+
+// The TinyGPSPlus object
+TinyGPSPlus gps;
+
+// Use UART2 on ESP32 (GPIO 16 = RX2, GPIO 17 = TX2)
+HardwareSerial gpsSerial(2);
+
+void setup() {
+  Serial.begin(115200);
+  gpsSerial.begin(9600, SERIAL_8N1, 16, 17); // NEO-6M default baud rate is 9600
+  
+  Serial.println("ESP32 NEO-6M GPS Module Initialized...");
+}
+
+void loop() {
+  // Read data from GPS module
+  while (gpsSerial.available() > 0) {
+    char c = gpsSerial.read();
+    gps.encode(c); // Encode NMEA data into TinyGPSPlus
+  }
+
+  // Check if new location data is updated
+  if (gps.location.isUpdated()) {
+    Serial.print("Latitude: ");
+    Serial.println(gps.location.lat(), 6);
+    Serial.print("Longitude: ");
+    Serial.println(gps.location.lng(), 6);
+    Serial.print("Altitude: ");
+    Serial.print(gps.altitude.meters());
+    Serial.println(" m");
+    Serial.print("Satellites: ");
+    Serial.println(gps.satellites.value());
+    Serial.print("Speed: ");
+    Serial.print(gps.speed.kmph());
+    Serial.println(" km/h");
+    Serial.println("----------------program---");
+  }
+
+  // Debug: If no data is received after a few seconds, check wiring or satellite fix
+  static unsigned long lastPrint = 0;
+  if (millis() - lastPrint > 5000) {
+    lastPrint = millis();
+    if (gps.charsProcessed() < 10) {
+      Serial.println("No GPS characters received: check wiring!");
+    } else if (gps.satellites.value() == 0) {
+      Serial.println("Waiting for satellite fix (place antenna outdoors)...");
+    }
+  }
+}
