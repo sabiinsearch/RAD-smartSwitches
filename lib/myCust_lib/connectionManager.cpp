@@ -62,6 +62,7 @@ void messageHandler(char* topic, byte* payload, unsigned int length)
   deserializeJson(doc, payload);
   const char* message = doc["message"];
   Serial.println(message);
+  //mySerial.println(message);  // Send the message to the external device via UART2
   }
 
 void publishOnMqtt(char* data, connectionManager* con) {
