@@ -65,7 +65,7 @@ void loop_mgr(appManager* appMgr) {
  
 void getDeviceData(appManager* appMgr) {
 
-// check Serial and set data In Application Manager
+// Print the data from Application Manager 
 
 
 }
@@ -78,6 +78,7 @@ void publishData(appManager* appMgr) {
       char lng_Buff[20];
       char batt_Buff[20];
       char temp_Buff[20];
+      
       // snprintf(lat_Buff, sizeof(lat_Buff), "%.1f", appMgr->mgr_gps.location.lat());
       // snprintf(lng_Buff, sizeof(lng_Buff), "%.1f", appMgr->mgr_gps.location.lng());
       // snprintf(batt_Buff, sizeof(batt_Buff), "%.1f", appMgr->batteryLevel);
