@@ -10,11 +10,11 @@
 //  Mqtt Configurations 
     #define THINGNAME               "green-building-1"        // Change this
     #define AWS_ENDPOINT            "a2rtkre10vau7j-ats.iot.eu-north-1.amazonaws.com"   // AWS MQTT Broker URL  
-    #define AWS_IOT_PUBLISH_TOPIC   "bems/green-building-1/"           //change this
+    #define AWS_IOT_PUBLISH_TOPIC   "bems/green-building-1/cmd"           //change this
     #define AWS_IOT_SUBSCRIBE_TOPIC "bems/green-building-1/tel"           //change this
     
     #define PUBLILISH_INTERVAL  1000       // seconds  // actually 16 seconds 
-    #define TIMEOUT_INTERVAL    120       // seconds
+    #define TIMEOUT_INTERVAL    120       // secondsx   
    // #define DISPLAY_TIME        10000      // milliseconds 
 
    /******** Define  Commands   ************/ 

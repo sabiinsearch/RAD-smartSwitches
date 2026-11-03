@@ -108,12 +108,14 @@ void connectAWS(connectionManager * con) {
   while (!pub_sub_client.connect(THINGNAME))
   {
     if (millis() - lastErrorLog >= 5000) {
+      Serial.print(" . ");
       char tlsError[128] = {0};
       int tlsErrorCode = net.lastError(tlsError, sizeof(tlsError));
       Serial.printf("AWS connect failed: MQTT state=%d, TLS error=%d (%s)\n",
                     pub_sub_client.state(), tlsErrorCode,
                     tlsErrorCode ? tlsError : "none");
       lastErrorLog = millis();
+      
     }
     delay(1000);
   }

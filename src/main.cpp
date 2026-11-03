@@ -53,10 +53,10 @@ void setup()
   mySerial.begin(9600, SERIAL_8N1, RX_pin, TX_pin);  // Initialize Serial1 with custom pins
 
   //  Initiating Manager
-  //appManager_ctor(&managr);
+  appManager_ctor(&managr);
 
   // Getting swich status and setting in  Application Manager for further action
-  if (xTaskCreatePinnedToCore(checkSerialData, "Serial_Task", 4096, NULL, 1, NULL, 0) == pdPASS) {
+   if (xTaskCreatePinnedToCore(checkSerialData, "Serial_Task", 4096, &managr, 1, NULL, 0) == pdPASS) {
     Serial.println("Task created");
   } else {
     Serial.println("Failed to create Serial_Task");
