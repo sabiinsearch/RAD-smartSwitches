@@ -15,7 +15,6 @@
 // my libraries
 #include "appManager.h"
 #include "receiverBoard.h"
-#include "sensor.h"
 
 HardwareSerial mySerial(2);  // Use UART2 for Serial1
 
@@ -26,15 +25,17 @@ appManager managr;
 // WiFiClientSecure net = WiFiClientSecure();
 // PubSubClient client(net);
 
-void checkSerialData(void * pvParameters) {
+void checkSerialData(void *) {
+  for (;;) {
+    // Read data coming from the external device via UART2 and print to PC
+    if (mySerial.available() > 0) {
+      String incomingData = mySerial.readString();
+      //incomingData.trim();
+      Serial.print("Received via UART2: ");
+      Serial.println(incomingData);
+    }
 
-  appManager* appMgr = (appManager*) pvParameters;
-     // Read data coming from the external device via UART2 and print to PC
-  if (mySerial.available() > 0) {
-    String incomingData = mySerial.readStringUntil('\n');
-    incomingData.trim();
-    Serial.print("Received via UART2: ");
-    Serial.println(incomingData);
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
 
@@ -44,17 +45,19 @@ void setup()
   // Change from 2048 to 4096 or higher
 //xTaskCreate(TaskFunction, "ScaleTask", 4096, NULL, 1, NULL);
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 
-  mySerial.begin(115200, SERIAL_8N1, RX_pin, TX_pin);  // Initialize Serial1 with custom pins
+  mySerial.begin(9600, SERIAL_8N1, RX_pin, TX_pin);  // Initialize Serial1 with custom pins
 
   //  Initiating Manager
-  appManager_ctor(&managr);
+  //appManager_ctor(&managr);
 
   // Getting swich status and setting in  Application Manager for further action
-   xTaskCreatePinnedToCore( checkSerialData, "Serial_Task", 10000, &managr, 1, NULL, 1);
-    
-   Serial.println("Task created ");
+  if (xTaskCreatePinnedToCore(checkSerialData, "Serial_Task", 4096, NULL, 1, NULL, 0) == pdPASS) {
+    Serial.println("Task created");
+  } else {
+    Serial.println("Failed to create Serial_Task");
+  }
    
   Serial.println("All Systems Initialized..");
  
@@ -63,7 +66,7 @@ void setup()
 void loop()
 {
     
-  
+ /*
   getDeviceData(&managr);
 
   // Get Switches status and publish data to AWS IoT
@@ -74,4 +77,5 @@ void loop()
   loop_mgr(&managr);
   //Serial.println(F("==>> in loop() : main.cpp"));
   //delay(1000);
+  */
 }
