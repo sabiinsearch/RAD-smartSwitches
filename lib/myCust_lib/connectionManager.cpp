@@ -155,21 +155,21 @@ void reconnectWiFi(connectionManager  * con){
   res = wm.autoConnect("myContainer"); // anonymous ap
     if(!res) {
         con->Wifi_status = false;
-        digitalWrite(WIFI_LED,HIGH);
+//        digitalWrite(WIFI_LED,HIGH);
         Serial.println("Failed to connect");
         delay(3000);
         delay(5000);
     } 
     else {
         //if you get here you have connected to the WiFi  
-        digitalWrite(WIFI_LED,LOW);  
+//        digitalWrite(WIFI_LED,LOW);  
         con->Wifi_status = true;   
     }
 }
 
 bool connectWiFi(connectionManager * con) {
   bool res;
-  digitalWrite(HEARTBEAT_LED,LOW);  
+//  digitalWrite(HEARTBEAT_LED,LOW);  
   wm.setConfigPortalTimeout(TIMEOUT_INTERVAL); // If no access point name has been previously entered disable timeout
   // wm.setConnectTimeout(TIMEOUT_INTERVAL);
   res = wm.autoConnect("GPS_Data"); // auto generated AP name from chipid
@@ -182,8 +182,8 @@ bool connectWiFi(connectionManager * con) {
     if(res) {
       //if you get here you have connected to the WiFi         
         con->Wifi_status = true;
-        digitalWrite(HEARTBEAT_LED,HIGH);
-        digitalWrite(WIFI_LED,LOW);   
+        // digitalWrite(HEARTBEAT_LED,HIGH);
+        // digitalWrite(WIFI_LED,LOW);   
       //  Serial.println("Wifi connected...yeey :)");     
         initNTP();      
     }
@@ -195,7 +195,7 @@ void resetWifi(connectionManager * con) {
     // wm.setConnectTimeout(TIMEOUT_INTERVAL);
     wm.setConfigPortalTimeout(TIMEOUT_INTERVAL); // If no access point name has been previously entered disable timeout
     wm.resetSettings(); // reset settings - wipe stored credentials for testing, these are stored by the esp library
-    digitalWrite(WIFI_LED,HIGH);
+//    digitalWrite(WIFI_LED,HIGH);
 }
 
 

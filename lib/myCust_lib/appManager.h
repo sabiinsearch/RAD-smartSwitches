@@ -23,7 +23,9 @@ void connectCloud(appManager*);
 void broadcast_appMgr(appManager*);
 void checkConnections_and_reconnect(void * pvParameters);
 void loop_mgr(appManager*);
-void get_temp_data(appManager* appMgr);
+// void checkSerialData(appManager*);
+void getDeviceData(appManager* appMgr);
+void publishData(appManager* appMgr);
 
 
 

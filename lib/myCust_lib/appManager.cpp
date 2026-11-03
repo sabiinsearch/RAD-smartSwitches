@@ -5,8 +5,6 @@
 #include <ArduinoJson.h>
 #include <time.h>
 
-// libraries for Display
-#include <Wire.h>
 
 // Library for GPS
 
@@ -65,7 +63,9 @@ void loop_mgr(appManager* appMgr) {
 
 
  
-void get_temp_data(appManager* appMgr) {
+void getDeviceData(appManager* appMgr) {
+
+// check Serial and set data In Application Manager
 
 
 }
@@ -78,12 +78,12 @@ void publishData(appManager* appMgr) {
       char lng_Buff[20];
       char batt_Buff[20];
       char temp_Buff[20];
-      snprintf(lat_Buff, sizeof(lat_Buff), "%.1f", appMgr->mgr_gps.location.lat());
-      snprintf(lng_Buff, sizeof(lng_Buff), "%.1f", appMgr->mgr_gps.location.lng());
-      snprintf(batt_Buff, sizeof(batt_Buff), "%.1f", appMgr->batteryLevel);
-      snprintf(temp_Buff, sizeof(temp_Buff), "%.1f", appMgr->temperature);
+      // snprintf(lat_Buff, sizeof(lat_Buff), "%.1f", appMgr->mgr_gps.location.lat());
+      // snprintf(lng_Buff, sizeof(lng_Buff), "%.1f", appMgr->mgr_gps.location.lng());
+      // snprintf(batt_Buff, sizeof(batt_Buff), "%.1f", appMgr->batteryLevel);
+      // snprintf(temp_Buff, sizeof(temp_Buff), "%.1f", appMgr->temperature);
       
-       doc["UID"] = UNIQUE_ID;  // Add unique ID to the JSON document
+      //  doc["UID"] = UNIQUE_ID;  // Add unique ID to the JSON document
       // Get current time
       struct tm timeinfo;
       if(getLocalTime(&timeinfo)){
@@ -121,16 +121,8 @@ void publishData(appManager* appMgr) {
  
  void initBoard() {  
   // Configuring Board pins
-
-  pinMode(BAT_PIN, INPUT);
-
-  pinMode(BAT_HIGH_PIN, OUTPUT);
-
-  pinMode(BAT_LOW_PIN, OUTPUT);
-
-  pinMode(BAT_SW_PIN, OUTPUT);
-
-  pinMode(TEMP_PIN, INPUT);
+ 
+ 
 
   Serial.println();
   
