@@ -25,7 +25,8 @@ appManager managr;
 // WiFiClientSecure net = WiFiClientSecure();
 // PubSubClient client(net);
 
-void checkSerialData(void *) {
+void checkSerialData(void * pvParameters) {
+  appManager* appMgr = (appManager*) pvParameters;  // Access the global appManager instance
   for (;;) {
     // Read data coming from the external device via UART2 and print to PC
     if (mySerial.available() > 0) {
@@ -33,6 +34,8 @@ void checkSerialData(void *) {
       //incomingData.trim();
       Serial.print("Received via UART2: ");
       Serial.println(incomingData);
+
+      appMgr->device_status_msg = incomingData;  // Store the received data in the appManager instance
     }
 
     vTaskDelay(pdMS_TO_TICKS(10));
@@ -50,7 +53,7 @@ void setup()
   mySerial.begin(9600, SERIAL_8N1, RX_pin, TX_pin);  // Initialize Serial1 with custom pins
 
   //  Initiating Manager
-  appManager_ctor(&managr);
+  //appManager_ctor(&managr);
 
   // Getting swich status and setting in  Application Manager for further action
   if (xTaskCreatePinnedToCore(checkSerialData, "Serial_Task", 4096, NULL, 1, NULL, 0) == pdPASS) {

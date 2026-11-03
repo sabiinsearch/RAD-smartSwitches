@@ -10,8 +10,8 @@
 
 typedef struct {
 
-     connectionManager* conManager;     
-     
+        connectionManager* conManager;     
+        String device_status_msg;
         bool publish_check;      
         
 } appManager;

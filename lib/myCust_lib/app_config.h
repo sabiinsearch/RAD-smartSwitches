@@ -9,7 +9,7 @@
 /******************************* Do Not Edit / update these values      **************************************/
 //  Mqtt Configurations 
     #define THINGNAME               "green-building-1"        // Change this
-    #define AWS_ENDPOINT            "am2i6420agb0f-ats.iot.ap-south-1.amazonaws.com"   // AWS MQTT Broker URL  
+    #define AWS_ENDPOINT            "a2rtkre10vau7j-ats.iot.eu-north-1.amazonaws.com"   // AWS MQTT Broker URL  
     #define AWS_IOT_PUBLISH_TOPIC   "bems/green-building-1/"           //change this
     #define AWS_IOT_SUBSCRIBE_TOPIC "bems/green-building-1/tel"           //change this
     
