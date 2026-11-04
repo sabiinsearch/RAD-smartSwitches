@@ -21,8 +21,9 @@ int publish_counter = 0;
 appManager managr;
 
 void checkSerialData(void * pvParameters) {
+  String jsonReceived = "{}";
   appManager* appMgr = (appManager*) pvParameters;
-  for (;;) {
+  while (1) {
     // Read data coming from the external device via UART2 and print to PC
     if (mySerial.available() > 0) {
       String incomingData = mySerial.readString();
