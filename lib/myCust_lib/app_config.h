@@ -8,10 +8,10 @@
 
 /******************************* Do Not Edit / update these values      **************************************/
 //  Mqtt Configurations 
-    #define THINGNAME               "green-building-1"        // Change this
-    #define AWS_ENDPOINT            "a2rtkre10vau7j-ats.iot.eu-north-1.amazonaws.com"   // AWS MQTT Broker URL  
-    #define AWS_IOT_PUBLISH_TOPIC   "bems/green-building-1/cmd"           //change this
-    #define AWS_IOT_SUBSCRIBE_TOPIC "bems/green-building-1/tel"           //change this
+    #define THINGNAME               "GPS_Device"//"green-building-1"        // Change this
+    #define AWS_ENDPOINT            "am2i6420agb0f-ats.iot.ap-south-1.amazonaws.com"//"a2rtkre10vau7j-ats.iot.eu-north-1.amazonaws.com"   // AWS MQTT Broker URL  
+    #define AWS_IOT_PUBLISH_TOPIC   "Device/GPS_data_frm"//"bems/green-building-1/cmd"           //change this
+    #define AWS_IOT_SUBSCRIBE_TOPIC "Device/GPS_data_to"//"bems/green-building-1/tel"           //change this
     
     #define PUBLILISH_INTERVAL  1000       // seconds  // actually 16 seconds 
     #define TIMEOUT_INTERVAL    120       // secondsx   
