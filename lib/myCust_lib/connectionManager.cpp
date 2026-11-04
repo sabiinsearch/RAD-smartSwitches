@@ -31,7 +31,9 @@ char server[50] = AWS_ENDPOINT;
 connectionManager * const connectionManager_ctor(connectionManager * const me ) {
    me->client = pub_sub_client;
    connectWiFi(me);
+#if ENABLE_AWS_CONNECT
    connectAWS(me);
+#endif
    return me;
 }
 
@@ -134,6 +136,7 @@ void initNTP() {
 }
 
 void loop_con(connectionManager* con) {
+#if ENABLE_AWS_CONNECT
   if (WiFi.status() == WL_CONNECTED) {
     if (!pub_sub_client.connected()) {
       static unsigned long lastReconnect = 0;
@@ -146,6 +149,7 @@ void loop_con(connectionManager* con) {
       pub_sub_client.loop();
     }
   }
+#endif
 }
 
 void initWiFi() {

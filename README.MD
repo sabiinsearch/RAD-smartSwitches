@@ -9,36 +9,54 @@ pio run --target erase
 
 ---
 
-## MQTT CLI Commands (Windows Command Prompt)
+## ⚠️ Important Note on AWS IoT Client ID Conflict
 
-Open Command Prompt and navigate to the `certs_user` directory:
+AWS IoT Core allows **only ONE active connection** at a time for Client ID `green-building-1`.
+- If your **ESP32 is turned ON** and you run `mosquitto_sub` or CLI scripts on your PC using `green-building-1`, AWS will repeatedly disconnect the CLI and the ESP32 (`Error: Connection lost`).
+- **To test from PC CLI:** Power OFF / unplug the ESP32 board while testing from Command Prompt.
+- **To test while ESP32 is running:** Use the **AWS IoT Core Web Console -> MQTT test client** to subscribe and publish, so you do not disconnect the physical device.
+
+---
+
+## Testing via Python Helper Scripts (Easiest & Detailed)
+
+Navigate to the `certs_user` folder in Command Prompt:
 ```cmd
 cd C:\myData\software_projects\RAD\RAD-smartSwitches\certs_user
 ```
 
-> **Note:** Ensure the ESP32 is powered off while running these commands, as AWS IoT Core allows only one active connection per Client ID (`green-building-1`).
-
-### 1. Subscribe to Command Topic (Receive Commands from Cloud)
-Subscribes to `bems/green-building-1/cmd` with QoS 1:
+### 1. Subscribe and display entire message payload:
 ```cmd
-mosquitto_sub -d -h a2rtkre10vau7j-ats.iot.ap-south-1.amazonaws.com -p 8883 --cafile AmazonRootCA1.pem --cert Device-certificate.pem.crt --key Device-private.pem.key -i green-building-1 -t bems/green-building-1/cmd -q 1 -v
+python sub.py
 ```
-*(To test message reception, publish a test message like `{"message":"1#"}` to `bems/green-building-1/cmd` from the AWS IoT Core Console > MQTT test client).*
+*(Prints clear status when connected, and prints the full unabridged message whenever one arrives)*
 
-### 2. Publish to Telemetry Topic (Send Data to Cloud)
-Publishes test JSON telemetry to `bems/green-building-1/tel`:
+### 2. Publish telemetry to AWS IoT:
 ```cmd
-mosquitto_pub -d -h a2rtkre10vau7j-ats.iot.ap-south-1.amazonaws.com -p 8883 --cafile AmazonRootCA1.pem --cert Device-certificate.pem.crt --key Device-private.pem.key -i green-building-1 -t bems/green-building-1/tel -m "{\"status\":\"active\",\"data\":\"test\"}" -q 1
+python pub.py "{\"status\":\"active\",\"data\":\"test\"}"
 ```
 
-### 3. Publish to Status Topic (Online Status)
-Publishes online status to `bems/green-building-1/status`:
+---
+
+## Testing via Mosquitto CLI
+
+Open Command Prompt and navigate to `certs_user`:
 ```cmd
-mosquitto_pub -d -h a2rtkre10vau7j-ats.iot.ap-south-1.amazonaws.com -p 8883 --cafile AmazonRootCA1.pem --cert Device-certificate.pem.crt --key Device-private.pem.key -i green-building-1 -t bems/green-building-1/status -m "online" -q 1
+cd C:\myData\software_projects\RAD\RAD-smartSwitches\certs_user
 ```
 
-### 4. Automated Python Test Script
-Runs all verification checks (DNS, port 8883, TLS 1.3 handshake, connect, subscribe, publish, and optional command listening):
+### 1. Subscribe to Command Topic (bems/green-building-1/cmd)
+```cmd
+mosquitto_sub -v -h a2rtkre10vau7j-ats.iot.ap-south-1.amazonaws.com -p 8883 --cafile AmazonRootCA1.pem --cert Device-certificate.pem.crt --key Device-private.pem.key -i green-building-1 -t bems/green-building-1/cmd -q 1
+```
+*Note: With `-v`, the prompt will stay open and display `bems/green-building-1/cmd <full message>` as soon as a message is published from AWS IoT Core test client.*
+
+### 2. Publish to Telemetry Topic (bems/green-building-1/tel)
+```cmd
+mosquitto_pub -h a2rtkre10vau7j-ats.iot.ap-south-1.amazonaws.com -p 8883 --cafile AmazonRootCA1.pem --cert Device-certificate.pem.crt --key Device-private.pem.key -i green-building-1 -t bems/green-building-1/tel -m "{\"status\":\"active\",\"data\":\"test\"}" -q 1
+```
+
+### 3. Automated Connection & Verification Script
 ```cmd
 python test_aws_iot.py --listen 30
 ```

@@ -4,6 +4,7 @@
 #include "Arduino.h"
 
 /******************************* MQTT Configurations for AWS IoT (certs_user) **************************************/
+#define ENABLE_AWS_CONNECT      true                             // Set to false if you want ESP32 to pause AWS connection while testing from PC CLI
 #define THINGNAME               "green-building-1"
 #define AWS_ENDPOINT            "a2rtkre10vau7j-ats.iot.ap-south-1.amazonaws.com"
 #define AWS_PORT                8883
