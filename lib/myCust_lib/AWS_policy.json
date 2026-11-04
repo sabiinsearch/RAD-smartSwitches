@@ -1,37 +1,23 @@
 {
-  "Version": "2012-10-17",
+  "Version": "2012-10-03",
   "Statement": [
     {
       "Effect": "Allow",
       "Action": "iot:Connect",
-      "Resource": [
-        "arn:aws:iot:ap-south-1:004162006136:client/GPS_Device",
-        "arn:aws:iot:ap-south-1:004162006136:client/GPS_Device_Listener"
-      ]
+      "Resource": "arn:aws:iot:ap-south-1:*:client/green-building-1*"
     },
     {
       "Effect": "Allow",
-      "Action": "iot:Publish",
-      "Resource": [
-        "arn:aws:iot:ap-south-1:004162006136:topic/Device/GPS_data_to",
-        "arn:aws:iot:ap-south-1:004162006136:topic/Device/GPS_data_frm"
-      ]
+      "Action": [
+        "iot:Publish",
+        "iot:Receive"
+      ],
+      "Resource": "arn:aws:iot:ap-south-1:*:topic/bems/green-building-1/*"
     },
     {
       "Effect": "Allow",
       "Action": "iot:Subscribe",
-      "Resource": [
-        "arn:aws:iot:ap-south-1:004162006136:topicfilter/Device/GPS_data_to",
-        "arn:aws:iot:ap-south-1:004162006136:topicfilter/Device/GPS_data_frm"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": "iot:Receive",
-      "Resource": [
-        "arn:aws:iot:ap-south-1:004162006136:topic/Device/GPS_data_to",
-        "arn:aws:iot:ap-south-1:004162006136:topic/Device/GPS_data_frm"
-      ]
+      "Resource": "arn:aws:iot:ap-south-1:*:topicfilter/bems/green-building-1/*"
     }
   ]
 }
