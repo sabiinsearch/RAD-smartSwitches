@@ -1,12 +1,14 @@
 #include <pgmspace.h>
-
 #include <app_config.h>
 
 #ifndef SECRET_H
 #define SECRET_H
 
+// AWS IoT Credentials from certs_user/
+// Target Thing: green-building-1
+// Endpoint: a2rtkre10vau7j-ats.iot.ap-south-1.amazonaws.com
 
-// Amazon Root CA 1
+// Amazon Root CA 1 (certs_user/AmazonRootCA1.pem)
 static const char AWS_CERT_CA[] PROGMEM = R"EOF(
 -----BEGIN CERTIFICATE-----
 MIIDQTCCAimgAwIBAgITBmyfz5m/jAo54vB4ikPmljZbyjANBgkqhkiG9w0BAQsF
@@ -30,7 +32,7 @@ rqXRfboQnoZsG4q5WTP468SQvvG5
 -----END CERTIFICATE-----
 )EOF";
 
-// Device Certificate                                               //change this
+// Device Certificate (certs_user/Device-certificate.pem.crt)
 static const char AWS_CERT_CRT[] PROGMEM = R"KEY(
 -----BEGIN CERTIFICATE-----
 MIIDWTCCAkGgAwIBAgIUV503AWTBP51jPvGCMxLdKSZ9AV4wDQYJKoZIhvcNAQEL
@@ -54,7 +56,7 @@ AoeKDaObl6LvyY+lWJzTN5iWGZVmfm+lZ3gDpSs2MG5FLQI1OxICwx7IdFID
 -----END CERTIFICATE-----
 )KEY";
 
-// Device Private Key                                               //change this
+// Device Private Key (certs_user/Device-private.pem.key)
 static const char AWS_CERT_PRIVATE[] PROGMEM = R"KEY(
 -----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAoNKMzOk4qlBDZBQhgtpigMBH+grgtLFtsd7dCH/STMEvaCsF

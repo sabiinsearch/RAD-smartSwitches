@@ -1,29 +1,27 @@
-
 #ifndef __APP_CONFIG_H__
 #define __APP_CONFIG_H__
 
 #include "Arduino.h"
 
-//#define UNIQUE_ID              "T4"  // Change this to a unique identifier for your device
+/******************************* MQTT Configurations for AWS IoT (certs_user) **************************************/
+#define THINGNAME               "green-building-1"
+#define AWS_ENDPOINT            "a2rtkre10vau7j-ats.iot.ap-south-1.amazonaws.com"
+#define AWS_PORT                8883
 
-/******************************* Do Not Edit / update these values      **************************************/
-//  Mqtt Configurations 
-    #define THINGNAME               "green-building-1"//"GPS_Device"        // Change this
-    #define AWS_ENDPOINT            "a2rtkre10vau7j-ats.iot.eu-north-1.amazonaws.com"//"am2i6420agb0f-ats.iot.ap-south-1.amazonaws.com"   // AWS MQTT Broker URL  
-    #define AWS_IOT_PUBLISH_TOPIC   "bems/green-building-1/cmd"//"Device/GPS_data_frm"         //change this
-    #define AWS_IOT_SUBSCRIBE_TOPIC "bems/green-building-1/tel"//"Device/GPS_data_to"         //change this
-    
-    #define PUBLILISH_INTERVAL  1000       // seconds  // actually 16 seconds 
-    #define TIMEOUT_INTERVAL    120       // secondsx   
-   // #define DISPLAY_TIME        10000      // milliseconds 
+// BEMS AWS IoT Topics (Policy: bems-device)
+#define AWS_IOT_PUBLISH_TOPIC   "bems/green-building-1/tel"      // Telemetry published by device to cloud
+#define AWS_IOT_SUBSCRIBE_TOPIC "bems/green-building-1/cmd"      // Commands subscribed by device from cloud
+#define AWS_IOT_STATUS_TOPIC    "bems/green-building-1/status"   // Status (online/offline) published by device
 
-   /******** Define  Commands   ************/ 
-   
-   #define AUTO        "A#"
-   #define MANUAL      "M#"
-   #define GRID        "1#" 
-   #define BIOMASS     "2#" 
-   #define SOLAR       "3#" 
-   #define BESS        "4#"
+#define PUBLILISH_INTERVAL      1000                             // loop cycles between publish
+#define TIMEOUT_INTERVAL        120                              // seconds
+
+/******** Define Commands ************/ 
+#define AUTO        "A#"
+#define MANUAL      "M#"
+#define GRID        "1#" 
+#define BIOMASS     "2#" 
+#define SOLAR       "3#" 
+#define BESS        "4#"
 
 #endif
