@@ -1,4 +1,4 @@
-#include <ArduinoJson.h>
+﻿#include <ArduinoJson.h>
 #include <time.h>
 #include "connectionManager.h"
 #include "Preferences.h"
@@ -114,12 +114,16 @@ void connectAWS(connectionManager * con) {
 
   Serial.println("AWS IoT Connected successfully!");
 
-  // Subscribe to command topic (bems/green-building-1/cmd)
-  if (pub_sub_client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC, 1)) {
-    Serial.printf("Subscribed to command topic: %s (QoS 1)\n", AWS_IOT_SUBSCRIBE_TOPIC);
-  } else {
-    Serial.printf("Failed to subscribe to topic: %s\n", AWS_IOT_SUBSCRIBE_TOPIC);
-  }
+  // Subscribe to command topic. QoS 0 avoids PUBACK timing issues.
+  // Note: subscribe() only SENDS the SUBSCRIBE packet - it does NOT wait for SUBACK.
+  // We call pub_sub_client.loop() briefly after to process the SUBACK from AWS IoT.
+  bool subSent = pub_sub_client.subscribe(AWS_IOT_SUBSCRIBE_TOPIC, 0);
+  Serial.printf("[MQTT] SUBSCRIBE packet sent=%s to %s\n", subSent ? "OK" : "FAILED", AWS_IOT_SUBSCRIBE_TOPIC);
+
+  // Process SUBACK by calling loop() for up to 1 second
+  unsigned long subackWait = millis();
+  while (millis() - subackWait < 1000) { pub_sub_client.loop(); delay(10); }
+  Serial.printf("[MQTT] SUBACK wait done. MQTT state=%d\n", pub_sub_client.state());
 
   // Publish online status to status topic (bems/green-building-1/status)
   pub_sub_client.publish(AWS_IOT_STATUS_TOPIC, "online");
@@ -137,8 +141,13 @@ void initNTP() {
 
 void loop_con(connectionManager* con) {
 #if ENABLE_AWS_CONNECT
+  static unsigned long lastDiag = 0;
   if (WiFi.status() == WL_CONNECTED) {
     if (!pub_sub_client.connected()) {
+      if (millis() - lastDiag > 5000) {
+        lastDiag = millis();
+        Serial.printf("[MQTT] Disconnected. State=%d. Will reconnect...\n", pub_sub_client.state());
+      }
       static unsigned long lastReconnect = 0;
       if (millis() - lastReconnect > 10000) {
         lastReconnect = millis();
@@ -146,7 +155,19 @@ void loop_con(connectionManager* con) {
         connectAWS(con);
       }
     } else {
-      pub_sub_client.loop();
+      if (millis() - lastDiag > 10000) {
+        lastDiag = millis();
+        Serial.printf("[MQTT] Connected OK. State=%d. Calling loop()...\n", pub_sub_client.state());
+      }
+      bool loopOk = pub_sub_client.loop();
+      if (!loopOk) {
+        Serial.println("[MQTT] loop() returned false - connection may have dropped!");
+      }
+    }
+  } else {
+    if (millis() - lastDiag > 5000) {
+      lastDiag = millis();
+      Serial.println("[WiFi] Not connected! Cannot run MQTT loop.");
     }
   }
 #endif

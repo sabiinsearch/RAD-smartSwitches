@@ -17,7 +17,6 @@
 
 HardwareSerial mySerial(2);      // Use UART2 for communication with smart switches
 
-int publish_counter = 0;
 appManager managr;
 
 void checkSerialData(void * pvParameters) {
@@ -57,16 +56,19 @@ void setup() {
 }
 
 void loop() {
-  // Service MQTT loop (process incoming AWS IoT commands and maintain TLS keepalive)
+  // Service MQTT loop (process incoming AWS IoT commands and maintain TLS keepalive).
+  // This MUST be called as often as possible — no long blocking delays before this call.
+  // If loop() is starved by delay() or slow operations, incoming MQTT messages will be
+  // missed and messageHandler() will never fire.
   loop_mgr(&managr);
 
-  // Periodically publish device status to AWS IoT
-  if (publish_counter > PUBLILISH_INTERVAL) {      
+  // Periodically publish device status to AWS IoT using non-blocking millis() timing.
+  // Replaces the old publish_counter + delay(10) approach which blocked pub_sub_client.loop().
+  static unsigned long lastPublish = 0;
+  if (millis() - lastPublish >= PUBLILISH_INTERVAL * 10UL) {  // ~10s between publishes
+    lastPublish = millis();
     managr.publish_check = true;
     publishData(&managr);
     managr.publish_check = false;
-    publish_counter = 0;
   }
-  publish_counter++;
-  delay(10);
 }

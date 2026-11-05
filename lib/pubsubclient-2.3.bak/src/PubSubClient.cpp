@@ -1,4 +1,4 @@
-/*
+﻿/*
   PubSubClient.cpp - A simple client for MQTT.
   Nick O'Leary
   http://knolleary.net
@@ -206,7 +206,10 @@ boolean PubSubClient::connect(const char *id, const char *user, const char *pass
 }
 
 uint8_t PubSubClient::readByte() {
-    while(!_client->available()) {}
+    unsigned long startWait = millis();
+    while(!_client->available()) {
+        if (millis() - startWait > 1000) { return 0; }  // 1s timeout prevents infinite hang over TLS
+    }
     return _client->read();
 }
 
